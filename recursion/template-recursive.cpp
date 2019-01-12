@@ -11,35 +11,61 @@
 #include<list>
 using namespace std;
 
+template<class T>
+bool isExist(T array[], int size, T wanted){
+    if(size - 1 == 0)
+        return false;
+    else
+        if(array[size - 1] == wanted)
+            return true;
+        else
+            return (array, size - 1, wanted);
+}
+
+template<class T>
+vector<T> common(T array1[], T array2[], int size1, int size2){
+    vector<T> temp;
+    if(size1 == 0)
+        return temp;
+    else{
+        temp = common(array1, array2, size1 - 1, size2);
+        if(isExist(array2, size2, array1[size1 - 1]))
+            temp.push_back(array1[size1 - 1]);
+        return temp;
+    }
+}
+
 //Global template function that calculates and return average of a template vector
 //Pre: takes 3 parameters template vector, index of vector and ans for summation
 //Post: returns average of this vector
 template<class T>
-T average(vector<T> array, int index, T ans){
-    //base case of the recursion
-    if(array.size() == index){
-        return ans / array.size();
-    }
+T average(vector<T> array){
+    if(array.size() == 1)
+        return array.back() / array.size();
     else{
-        return average(array, index+1, ans + array[index]);
+        T temp = array.back();
+        array.pop_back();
+        array[array.size() - 1] += temp;
+        return average(array);
     }
 }//ends function
-
-
 
 //Global template recursive function that finds and returns greatest element of an array
 //Pre: Takes template array, array size and default greatest number as parameters
 //Post: Returns the greatest number of this array
 template<class T>
-T greatest(T array[], int size, T great){
-    if(size - 1 == 0)
-        return great;
+T greatest(vector<T> array){
+    if(array.size() == 1)
+        return array.back();
     else{
-        if(array[size - 1] > great)
-            great = array[size - 1];
-        greatest(array, size - 1, great);
+        T max = array.back();
+        array.pop_back();
+        if(max > array[array.size() - 1])
+            array[array.size() - 1] = max;
+        return findMax(array);
     }
 }
+
 
 //Global template recursive function that finds common elements of two arrays then returns them
 //as array
@@ -90,6 +116,14 @@ vector<T> duplicate(vector<T> array, vector<T> newVect, int index){
 
 int main(int argc, char const *argv[]) {
 
+    cout << "***Recursive Common Elements: common(T array1[], T array2[], int size1, int size2)\n";
+    int arr1[4] = {1, 34, 0, 54};
+    int arr2[5] = {34, 1, 56, 32, 54};
+    for (int i = 0; i < 3; i++) {
+        cout << common(arr1, arr2, 4, 5)[i] << " ";
+    }
+    cout << "\n***END***\n\n";
+
     cout << "***Recursive Template Vector: average(vector<T> array, int index, ans + array[index])***\n";
     vector<int> array;
     array.push_back(2);
@@ -97,12 +131,11 @@ int main(int argc, char const *argv[]) {
     array.push_back(4);
     array.push_back(6);
     array.push_back(6);
-    cout << "Average of 2 4 6: " << average(array, 0, 0) << endl;
+    cout << "Average of 2 4 6: " << average(array) << endl;
     cout << "***END***\n\n";
 
     cout << "***Recursive Template Greatest Finder: greatest(T array[], int index, T great)***\n";
-    char array2[] = {'a', 'z', 'x', 'd', 'b'};
-    cout << greatest(array2, 5, array2[0]) << endl;
+    cout << greatest(array) << endl;
     cout << "***END***\n\n";
 
     /*
